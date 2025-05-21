@@ -2,7 +2,7 @@ import torch
 import os
 
 
-def train_loop(dataloader, model, loss_fn, optimizer, epoch, device):
+def train_loop(dataloader, model, loss_fn, optimizer, epoch, device, epochs):
     size = len(dataloader.dataset)
     print(f"Training set of size: {size}")
 
@@ -25,15 +25,15 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, device):
 
     # torch save model with torch.save()
     checkpoint = {
-        'epoch': epoch,  # l'epoca corrente
+        'epoch': epoch,  # current_epoch
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
     }
 
-    # Definisci il percorso della cartella dei checkpoint
-    checkpoint_dir = f'C:\\Users\\stefa\\Desktop\\DNN_2025_2\\Architetture\\Set{model.get_set()}\\models\\{model.get_name()}\\Checkpoint'
+    # Impose the directory of where you want to save checkpoints
+    checkpoint_dir = f'Checkpoints\\Set{model.get_set()}\\{model.get_name()}'
     os.makedirs(checkpoint_dir, exist_ok=True)
     checkpoint_path = os.path.join(checkpoint_dir,
-                                   f'epoch_{epoch}_Model_CNN_{model.get_name()}.pt')
-
+                                   f'epoch_{epoch}_Model_CNN_{model.get_name()}.pth')
+    print(f"Checkpoint saved to {checkpoint_path}")
     torch.save(checkpoint, checkpoint_path)

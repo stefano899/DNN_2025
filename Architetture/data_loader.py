@@ -4,6 +4,9 @@ from torchvision.transforms import ToTensor
 
 
 def handle_dataset():
+
+    batch_size = int(input("Inserisci il batch size: "))  # For processing simultaneously 128 images at every weigth update
+
     train_data = datasets.FashionMNIST(root='data', train=True, download=True, transform=ToTensor(), )
     test_data = datasets.FashionMNIST(root='data', train=False, download=True, transform=ToTensor(), )
 
@@ -19,7 +22,6 @@ def handle_dataset():
         8: 'Bag',
         9: 'Ankle Boot',
     }
-    batch_size = 128  # For processing simultaneously 128 images at every weigth update
 
     train_dataloader = DataLoader(train_data, batch_size=batch_size,
                                   shuffle=True)  # For every iteration, dataset is divided into gropus of 128 samples. Shuffle helps generalizing the model
