@@ -40,6 +40,10 @@ class Net(nn.Module):
             # Assegno ciascun pattern al corrispondente kernel per l'unico canale in ingresso.
             for k, kernel in enumerate(kernels):
                 self.conv1.weight[k, 0] = kernel
+                
+        # freezing first layer
+        for param in self.conv1.parameters():
+            param.requires_grad = False
 
 
 
