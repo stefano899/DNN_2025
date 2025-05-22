@@ -2,7 +2,7 @@ import os
 import shutil
 
 import torch
-from start import start_single_mode, start_sequence_mode
+from start import start
 
 if __name__ == "__main__":
 
@@ -32,12 +32,4 @@ if __name__ == "__main__":
         raise ValueError(f"Non è stata inserita un'opzione valida")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    scelta = int(input(
-        "Scegli la modalità di addestramento: \n 1- Singola: Addestra un modello alla volta \n 0- In Sequenza: Addestra tutti i modelli in sequenza \n"))
-
-    if scelta:
-        start_single_mode(device)
-    elif not scelta:
-        start_sequence_mode(device)
-    else:
-        raise ValueError(f"Non è stata inserita un'opzione valida")
+    start(device)

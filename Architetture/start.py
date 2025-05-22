@@ -15,14 +15,36 @@ from train import train_loop
 from test import test_loop
 
 
-def start_single_mode(device):
-    model = any
-    train_dataloader, test_dataloader, labels_map = handle_dataset()
-    selection = int(input(
-        "Scegli il modello che vuoi addestrare inserendo un numero da 1 a 6. Qui di seguito la leggenda: \n 1- A1HF, \n 2- A1DT, \n 3- A1HT,\n 4- A2HF,\n 5- A2DT, \n 6- A2HT: "))
+def start(device):
+    scelta = int(input(
+        "Scegli la modalità di addestramento: \n 1- Singola: Addestra un modello alla volta \n 0- In Sequenza: "
+        "Addestra tutti i modelli in sequenza \n"))
 
-    epochs = int(input("inserisci il numero di epoche: "))
+    if scelta:
+        selection = int(input(
+            "Scegli il modello che vuoi addestrare inserendo un numero da 1 a 6. Qui di seguito la leggenda: \n 1- "
+            "A1HF, \n 2- A1DT, \n 3- A1HT,\n 4- A2HF,\n 5- A2DT, \n 6- A2HT: "))
+        epochs = int(input("inserisci il numero di epoche: "))
+        batch_size = int(
+            input("Inserisci il batch size: "))  # For processing simultaneously 128 images at every weigth update
+        begin(selection, device, epochs, batch_size)
+    elif not scelta:
+        print("All 6 models will be trained in sequence and all of them will have the same number of epochs: ")
 
+        selections = [1, 2, 3, 4, 5, 6]
+        epochs = int(input("inserisci il numero di epoche: "))
+        batch_size = int(input("Inserisci il batch size: "))
+
+        for selection in selections:
+            begin(selection, device, epochs, batch_size)
+    else:
+        raise ValueError(f"Non è stata inserita un'opzione valida")
+
+    return
+
+
+def begin(selection, device, epochs, batch_size):
+    train_dataloader, test_dataloader, labels_map = handle_dataset(batch_size)
     model = initialization_or_load_weights(selection, labels_map)
     model.to(device)
 
@@ -30,7 +52,7 @@ def start_single_mode(device):
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     loss_fn = nn.CrossEntropyLoss()
 
-    print(f"Starting training for {model.name}")
+    print(f"Starting training for {model.get_set()}{model.get_name()}")
     accuracies = []
     losses = []
     precisions = []
@@ -49,53 +71,8 @@ def start_single_mode(device):
         recalls.append(recall)
 
     plot_graphs(accuracies, losses, epochs, model, precisions, f1s, recalls)  # , precisions, f1s, recalls)
-    print("Done!")
+    print("-------------------------------")
     return
-
-def begin()
-def start_sequence_mode(device):
-    model = any
-
-    print("All 6 models will be trained in sequence and all of them will have the same number of epochs: ")
-
-    selections = [1, 2, 3, 4, 5, 6]
-
-    epochs = int(input("inserisci il numero di epoche: "))
-    train_dataloader, test_dataloader, labels_map = handle_dataset()
-
-    for selection in selections:
-
-        model = initialization_or_load_weights(selection, labels_map)
-        model.to(device)
-
-        learning_rate = 1e-4
-        optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-        loss_fn = nn.CrossEntropyLoss()
-
-        print(f"Starting training for {model.name}")
-        accuracies = []
-        losses = []
-        precisions = []
-        f1s = []
-        recalls = []
-
-        for iterator in range(epochs):
-            print(f"Epoch {iterator + 1}\n-------------------------------")
-            train_loop(train_dataloader, model, loss_fn, optimizer, iterator + 1, device)
-
-            accuracy, loss, f1, precision, recall = test_loop(test_dataloader, model, loss_fn,
-                                                              device)  # add them if you want more results: , f1,
-            # precision, recall
-            accuracies.append(accuracy)
-            losses.append(loss)
-            precisions.append(precision)
-            f1s.append(f1)
-            recalls.append(recall)
-
-        plot_graphs(accuracies, losses, epochs, model, precisions, f1s, recalls)  # , precisions, f1s, recalls)
-    print("Done!")
-    return
-
 
 def initialization_or_load_weights(name, labels_map):
     """
@@ -124,8 +101,9 @@ def initialization_or_load_weights(name, labels_map):
         conv1_state_dict = {"conv1.weight": model.conv1.weight.data.clone(),
                             "conv1.bias": model.conv1.bias.data.clone()}
         torch.save(conv1_state_dict, weights_path)
-        print(f"Initialization saved in {weights_path}. From now on, every new training process involving {model.get_name()} "
-              f"(independent from the set) will be instantiated with these weights.")
+        print(
+            f"Initialization saved in {weights_path}. From now on, every new training process involving {model.get_name()} "
+            f"(independent from the set) will be instantiated with these weights.")
     else:
         print(f"There exists a weight initialization file for {model.get_name()}. I'm going to apply it to the model")
         conv1_weights = torch.load(weights_path)
@@ -135,18 +113,18 @@ def initialization_or_load_weights(name, labels_map):
 
         # DEBUG For checking if it applies the weights in a correct way.
         # Confronta i pesi del primo layer
-        #init = torch.load(weights_path)
-        #print(init.keys())
-        #layer_name = "conv1.weight"  # Modifica con il nome corretto del primo layer nel tuo modello
-        #weights_folder = init[layer_name]
-        #weights_model = model.conv1.weight.data
-        #print(f"weights_folder:")
-        #print(weights_model)
-        #print(f"weights_folder:")
-        #print(weights_folder)
-        #if torch.allclose(weights_model, weights_folder, atol=1e-6):
+        # init = torch.load(weights_path)
+        # print(init.keys())
+        # layer_name = "conv1.weight"  # Modifica con il nome corretto del primo layer nel tuo modello
+        # weights_folder = init[layer_name]
+        # weights_model = model.conv1.weight.data
+        # print(f"weights_folder:")
+        # print(weights_model)
+        # print(f"weights_folder:")
+        # print(weights_folder)
+        # if torch.allclose(weights_model, weights_folder, atol=1e-6):
         #    print("I pesi iniziali del primo layer sono coerenti tra le reti!")
-        #else:
+        # else:
         #    print("Attenzione! I pesi iniziali sono diversi.")
 
     return model

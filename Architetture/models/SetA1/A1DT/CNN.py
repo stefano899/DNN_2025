@@ -18,7 +18,6 @@ class A1DT(nn.Module):
         self.flatten = nn.Flatten()
         self.initialize_default_weights()
 
-
     def forward(self, x):
         x = self.pool1(self.relu(self.conv1(x)))
 

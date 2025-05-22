@@ -3,10 +3,7 @@ from torchvision import datasets
 from torchvision.transforms import ToTensor
 
 
-def handle_dataset():
-
-    batch_size = int(input("Inserisci il batch size: "))  # For processing simultaneously 128 images at every weigth update
-
+def handle_dataset(batch_size):
     train_data = datasets.FashionMNIST(root='data', train=True, download=True, transform=ToTensor(), )
     test_data = datasets.FashionMNIST(root='data', train=False, download=True, transform=ToTensor(), )
 
