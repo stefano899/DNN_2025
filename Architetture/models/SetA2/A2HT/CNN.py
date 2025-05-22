@@ -6,7 +6,7 @@ from torch.nn import init
 class A2HT(nn.Module):
     def __init__(self, classes):
         super(A2HT, self).__init__()
-        self.name = "A2HT"
+        self.name = "HT"
         self.set = "A2"
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=5, kernel_size=3, padding=1)  # Convolution layer
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)

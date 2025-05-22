@@ -24,7 +24,7 @@ def handle_dataset():
     }
 
     train_dataloader = DataLoader(train_data, batch_size=batch_size,
-                                  shuffle=True)  # For every iteration, dataset is divided into gropus of 128 samples. Shuffle helps generalizing the model
+                                  shuffle=False)  # For every iteration, dataset is divided into gropus of 128 samples. Shuffle helps generalizing the model
 
     test_dataloader = DataLoader(test_data, batch_size=batch_size)  # Same as train_dataloader but for the test
 
