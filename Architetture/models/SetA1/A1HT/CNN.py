@@ -8,11 +8,15 @@ class A1HT(nn.Module):
         self.name = "A1HT"
         self.set = "A1"
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=5, kernel_size=3, padding=1)  # Convolution layer
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.fc1 = nn.Linear(5 * 14 * 14, 100)  # first number is to decoding the 3d tensor vector into a 1D dimensional vector, 100 is the number of output neurons of fc1. I chosed 100 because is a good tradeoff between speed and leaning capacity
-        self.fc2 = nn.Linear(100, len(classes))  # Final fully connected layer. This is the layer that makes the preictions.
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # Undersampling
+        self.fc1 = nn.Linear(5 * 14 * 14,
+                             200)  # Fully connected layer
+        self.fc2 = nn.Linear(200,
+                             len(classes))
         self.relu = nn.ReLU()  # Activation Function
         self.flatten = nn.Flatten()
+        self.set_initial_kernels()
+        self.initialize_default_weights()
 
     def set_initial_kernels(self):
         # Definito by hand i primi 5 kernels
@@ -36,18 +40,24 @@ class A1HT(nn.Module):
                                 [1, 1, 1],
                                 [0, 1, 0]], dtype=torch.float32)
         kernels = [kernel1, kernel2, kernel3, kernel4, kernel5]  # list of
+        with torch.no_grad():
+            for k, kernel in enumerate(kernels):
+                self.conv1.weight[k, 0] = kernel
 
-        for k, kernel in enumerate(kernels):
-            self.conv1.weight[k, 0] = kernel
+    def initialize_default_weights(self):
+        with torch.no_grad():
+            nn.init.xavier_uniform_(self.fc1.weight, gain=nn.init.calculate_gain('relu'))
+            nn.init.xavier_uniform_(self.fc2.weight, gain=nn.init.calculate_gain('relu'))
+            nn.init.xavier_uniform_(self.fc2.weight, gain=nn.init.calculate_gain('relu'))
 
     def forward(self, x):
         x = self.pool1(self.relu(self.conv1(x)))
 
-        x = self.flatten(x)  # x becomes a 2D vector
+        x = self.flatten(x)
 
-        x = self.relu(self.fc1(x))  # actv. function applied on the first fully connected layer of output
+        x = self.relu(self.fc1(x))
 
-        x = self.fc2(x)  # Prediction
+        x = self.fc2(x)
         return x
 
     def get_name(self):

@@ -26,6 +26,9 @@ def test_loop(dataloader, model, loss_fn, device):
     recall = recall_score(all_labels, all_preds, average='macro')
     f1 = f1_score(all_labels, all_preds, average='macro')
 
-    print(f"Test Error: \n Accuracy: {accuracy:>8f}%, Avg loss: {test_loss:>8f}%") # for more results, delete this parethesys and add f" \n F1_Score: {f1:>8f}% " f"\n Precision: {precision:>8f}% \n Recall: {recall:>8f}%")
+    print(
+        f"Test Error: \n Accuracy: {accuracy:>8f}%, Avg loss: {test_loss:>8f}% \n F1_Score: {f1:>8f}% "
+        f"\n Precision: {precision:>8f}% \n Recall: {recall:>8f}%")  # for more results, delete this
+    # parethesys and add f" \n F1_Score: {f1:>8f}% " f"\n Precision: {precision:>8f}% \n Recall: {recall:>8f}%")
 
-    return accuracy, test_loss #, f1, precision, recall
+    return accuracy, test_loss, f1, precision, recall  # , f1, precision, recall

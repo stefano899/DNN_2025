@@ -1,5 +1,6 @@
 from torch import nn
 import torch
+from torch.nn import init
 
 
 class A2HF(nn.Module):
@@ -12,12 +13,13 @@ class A2HF(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=5, out_channels=10, kernel_size=3)
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.fc1 = nn.Linear(10*6*6, 200)
-        self.fc2 = nn.Linear(200, 100)
-        self.fc3 = nn.Linear(100, len(classes))
-        self.relu = nn.ReLU()
+        self.fc2 = nn.Linear(200, len(classes))
+        self.relu = nn.LeakyReLU()
         self.flatten = nn.Flatten()
         self.relu = nn.ReLU()  # Activation Function
         self.flatten = nn.Flatten()
+        self.initialize_default_weights()
+        self.set_initial_kernels()
 
     def set_initial_kernels(self):
         # Definito by hand i primi 5 kernels
@@ -50,13 +52,17 @@ class A2HF(nn.Module):
         for param in self.conv1.parameters():
             param.requires_grad = False
 
+    def initialize_default_weights(self):
+        with torch.no_grad():
+            init.xavier_uniform_(self.conv2.weight, gain=nn.init.calculate_gain('relu'))
+            init.xavier_uniform_(self.fc1.weight, gain=nn.init.calculate_gain('relu'))
+            init.xavier_uniform_(self.fc2.weight, gain=nn.init.calculate_gain('relu'))
     def forward(self, x):
         x = self.pool1(self.relu(self.conv1(x)))
         x = self.pool2(self.relu(self.conv2(x)))
         x = self.flatten(x)
         x = self.relu(self.fc1(x))
-        x = self.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = self.fc2(x)
         return x
 
     def get_name(self):

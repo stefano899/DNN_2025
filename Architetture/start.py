@@ -17,32 +17,29 @@ from test import test_loop
 
 def start_single_mode(device):
     model = any
-
+    train_dataloader, test_dataloader, labels_map = handle_dataset()
     name = input(
         "Scegli il nome del modello che vuoi addestrare. Copia uno di questi nomi e incollali di fianco: A1HF, A1DT, A1HT, A2HF, A2DT, A2HT: ")
 
     epochs = int(input("inserisci il numero di epoche: "))
-    train_dataloader, test_dataloader, labels_map = handle_dataset()
 
     if name == "A1DT":
         model = A1DT(labels_map)
 
     elif name == "A1HF":
         model = A1HF(labels_map)
-        model.set_initial_kernels()
 
     elif name == "A1HT":
         model = A1HT(labels_map)
-        model.set_initial_kernels()
+
     elif name == "A2DT":
         model = A2DT(labels_map)
 
     elif name == "A2HF":
         model = A2HF(labels_map)
-        model.set_initial_kernels()
+
     elif name == "A2HT":
         model = A2HT(labels_map)
-        model.set_initial_kernels()
 
     else:
         raise ValueError(f"Non è stata inserita un'opzione valida: {name}")
@@ -61,16 +58,16 @@ def start_single_mode(device):
 
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1}\n-------------------------------")
-        train_loop(train_dataloader, model, loss_fn, optimizer, epoch + 1, device, epochs)
-        accuracy, loss = test_loop(test_dataloader, model, loss_fn,
+        train_loop(train_dataloader, model, loss_fn, optimizer, epoch + 1, device)
+        accuracy, loss, f1, precision, recall = test_loop(test_dataloader, model, loss_fn,
                                    device)  # add them if you want more results , f1, precision, recall
         accuracies.append(accuracy)
         losses.append(loss)
-        # precisions.append(precision)
-        # f1s.append(f1)
-        # recalls.append(recall)
+        precisions.append(precision)
+        f1s.append(f1)
+        recalls.append(recall)
 
-    plot_graphs(accuracies, losses, epochs, model)  # , precisions, f1s, recalls)
+    plot_graphs(accuracies, losses, epochs, model, precisions, f1s, recalls)  # , precisions, f1s, recalls)
     print("Done!")
     return
 
@@ -94,22 +91,21 @@ def start_sequence_mode(device):
         if name == "A1DT":
             model = A1DT(labels_map)
 
-
         elif name == "A1HF":
             model = A1HF(labels_map)
-            model.set_initial_kernels()
+
         elif name == "A1HT":
             model = A1HT(labels_map)
-            model.set_initial_kernels()
+
         elif name == "A2DT":
             model = A2DT(labels_map)
 
         elif name == "A2HF":
             model = A2HF(labels_map)
-            model.set_initial_kernels()
+
         elif name == "A2HT":
             model = A2HT(labels_map)
-            model.set_initial_kernels()
+
         else:
             raise ValueError(f"Non è stata inserita un'opzione valida: {name}")
 
@@ -128,20 +124,22 @@ def start_sequence_mode(device):
         for iterator in range(epochs):
             print(f"Epoch {iterator + 1}\n-------------------------------")
             train_loop(train_dataloader, model, loss_fn, optimizer, iterator + 1, device)
-            accuracy, loss = test_loop(test_dataloader, model, loss_fn,
-                                       device)  # add them if you want more results: , f1, precision, recall
+
+            accuracy, loss, f1, precision, recall = test_loop(test_dataloader, model, loss_fn,
+                                                              device)  # add them if you want more results: , f1,
+            # precision, recall
             accuracies.append(accuracy)
             losses.append(loss)
-            # precisions.append(precision)
-            # f1s.append(f1)
-            # recalls.append(recall)
+            precisions.append(precision)
+            f1s.append(f1)
+            recalls.append(recall)
 
-        plot_graphs(accuracies, losses, epochs, model)  # , precisions, f1s, recalls)
+        plot_graphs(accuracies, losses, epochs, model, precisions, f1s, recalls)  # , precisions, f1s, recalls)
     print("Done!")
     return
 
 
-def plot_graphs(accuracies, losses, epochs, model):  # , precisions, f1s, recalls):
+def plot_graphs(accuracies, losses, epochs, model, precisions, f1s, recalls):  # , precisions, f1s, recalls):
     epoch_range = list(range(1, epochs + 1))
 
     plt.figure(figsize=(20, 12))  # Più grande per chiarezza
@@ -176,15 +174,6 @@ def plot_graphs(accuracies, losses, epochs, model):  # , precisions, f1s, recall
     plt.xticks(fontsize=font_tick)
     plt.yticks(fontsize=font_tick)
 
-    plt.tight_layout()
-    # Saving plots
-    output_dir = f"Plots\\{model.get_name()}"
-    os.makedirs(output_dir, exist_ok=True)
-    plt.savefig(os.path.join(output_dir, f"accuracy_loss_plot_of_{model.get_name()}.png"))
-    print(f"Saved plot to {output_dir}")
-
-
-"""
     # Precision
     plt.subplot(3, 2, 3)
     plt.plot(epoch_range, precisions, label="Precision", color='green', **plot_args)
@@ -217,4 +206,11 @@ def plot_graphs(accuracies, losses, epochs, model):  # , precisions, f1s, recall
     plt.legend(fontsize=font_legend)
     plt.xticks(fontsize=font_tick)
     plt.yticks(fontsize=font_tick)
-"""
+
+    # Saving plots
+    plt.tight_layout()
+    output_dir = f"Plots\\{model.get_name()}"
+    os.makedirs(output_dir, exist_ok=True)
+    plt.savefig(os.path.join(output_dir, f"accuracy_loss_plot_of_{model.get_name()}.png"))
+    print(f"Saved plot to {output_dir}")
+

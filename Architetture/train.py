@@ -2,7 +2,8 @@ import torch
 import os
 
 
-def train_loop(dataloader, model, loss_fn, optimizer, epoch, device, epochs):
+def train_loop(dataloader, model, loss_fn, optimizer, epoch, device):
+
     size = len(dataloader.dataset)
     print(f"Training set of size: {size}")
 
@@ -25,9 +26,7 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, device, epochs):
 
     # torch save model with torch.save()
     checkpoint = {
-        'epoch': epoch,  # current_epoch
         'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
     }
 
     # Impose the directory of where you want to save checkpoints
