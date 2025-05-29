@@ -44,8 +44,9 @@ def start(device):
 
 
 def begin(selection, device, epochs, batch_size):
-    train_dataloader, test_dataloader, labels_map = handle_dataset(batch_size)
-    model = initialization_or_load_weights(selection, labels_map)
+    train_dataloader, test_dataloader = handle_dataset(batch_size)
+    model = choose_model(selection)
+    # model = initialization_or_load_weights(selection)
     model.to(device)
 
     learning_rate = 1e-4
@@ -63,7 +64,7 @@ def begin(selection, device, epochs, batch_size):
         print(f"Epoch {epoch + 1}\n-------------------------------")
         train_loop(train_dataloader, model, loss_fn, optimizer, epoch + 1, device)
         accuracy, loss, f1, precision, recall = test_loop(test_dataloader, model, loss_fn,
-                                                          device)  # add them if you want more results , f1, precision, recall
+                                                          device, epoch)
         accuracies.append(accuracy)
         losses.append(loss)
         precisions.append(precision)
@@ -75,115 +76,54 @@ def begin(selection, device, epochs, batch_size):
     return
 
 
+def hand_kernels():
+    kernel1 = torch.tensor([[0, 0, 0],
+                            [1, 1, 1],
+                            [0, 0, 0]], dtype=torch.float32)
 
-def initialization_or_load_weights(name, labels_map):
-    model = choose_model(name, labels_map)
-    init_dir = "Initializations"
+    kernel2 = torch.tensor([[0, 1, 0],
+                            [0, 1, 0],
+                            [0, 1, 0]], dtype=torch.float32)
 
-    # Create subfolder for model name
-    weights_conv1_dir = os.path.join(init_dir, model.get_name())
-    weights_conv1_path = os.path.join(weights_conv1_dir, f"{model.get_name()}_conv1_weights_initialization.pth")
+    kernel3 = torch.tensor([[0, 0, 1],
+                            [0, 1, 0],
+                            [1, 0, 0]], dtype=torch.float32)
 
-    # Create subfolder for model set
-    other_weights_dir = os.path.join(init_dir, model.get_set())
-    other_weights_path = os.path.join(other_weights_dir, "fc1_and_or_conv2_weights_initialization.pth")
+    kernel4 = torch.tensor([[1, 0, 0],
+                            [0, 1, 0],
+                            [0, 0, 1]], dtype=torch.float32)
 
-    if not os.path.exists(weights_conv1_path):
-        os.makedirs(weights_conv1_dir, exist_ok=True)
-        print("Initialization conv1 path doesn't exist, I'm going to save its first weights initialization.")
-        conv1_state_dict = {
-            "conv1.weight": model.conv1.weight.data.clone(),
-            "conv1.bias": model.conv1.bias.data.clone()
-        }
-        torch.save(conv1_state_dict, weights_conv1_path)
-    else:
-        print(f"There exists a conv1 weight initialization file for {model.get_set()}{model.get_name()}. I'm going to apply it to the model.")
-        conv1_weights = torch.load(weights_conv1_path)
-        with torch.no_grad():
-            model.conv1.weight.copy_(conv1_weights["conv1.weight"])
-            model.conv1.bias.copy_(conv1_weights["conv1.bias"])
+    kernel5 = torch.tensor([[0, 1, 0],
+                            [1, 1, 1],
+                            [0, 1, 0]], dtype=torch.float32)
+    kernels = [kernel1, kernel2, kernel3, kernel4, kernel5]
 
-    if not os.path.exists(other_weights_path):
-        print("Initialization other layers path doesn't exist, I'm going to save its first weights initialization.")
-        os.makedirs(other_weights_dir, exist_ok=True)
-        if model.get_set() == "A1":
-            fc1_state_dict = {
-                "fc1.weight": model.fc1.weight.data.clone(),
-                "fc1.bias": model.fc1.bias.data.clone()
-            }
-            torch.save(fc1_state_dict, other_weights_path)
-        else:
-            fc2_conv2_state_dict = {
-                "conv2.weight": model.conv2.weight.data.clone(),
-                "conv2.bias": model.conv2.bias.data.clone(),
-                "fc1.weight": model.fc1.weight.data.clone(),
-                "fc1.bias": model.fc1.bias.data.clone()
-            }
-            torch.save(fc2_conv2_state_dict, other_weights_path)
-
-        print(
-            f"Initialization saved in {other_weights_path}.")
-
-    else:
-        print(f"There exists other layers initialization file for {model.get_set()}{model.get_name()}."
-              f"\n I'm going to apply it to the model.")
-
-        if model.get_set() == "A1":
-            fc1_weights = torch.load(other_weights_path)
-            with torch.no_grad():
-                model.fc1.weight.copy_(fc1_weights["fc1.weight"])
-                model.fc1.bias.copy_(fc1_weights["fc1.bias"])
-        else:
-            conv2_fc1_weights = torch.load(other_weights_path)
-            with torch.no_grad():
-                model.conv2.weight.copy_(conv2_fc1_weights["conv2.weight"])
-                model.conv2.bias.copy_(conv2_fc1_weights["conv2.bias"])
-                model.fc1.weight.copy_(conv2_fc1_weights["fc1.weight"])
-                model.fc1.bias.copy_(conv2_fc1_weights["fc1.bias"])
-
-    # DEBUG For checking if it applies the weights in a correct way.
-    # Confronta i pesi del primo layer
-    #init = torch.load(weights_conv1_path)
-    #print(init.keys())
-    #layer_name = "conv1.weight"  # Modifica con il nome corretto del primo layer nel tuo modello
-    #weights_folder = init[layer_name]
-    #weights_model = model.conv1.weight.data
-    #print(f"weights_folder:")
-    #print(weights_model)
-    #print(f"weights_folder:")
-    #print(weights_folder)
-    #if torch.allclose(weights_model, weights_folder, atol=1e-6):
-    #    print("I pesi iniziali del primo layer sono coerenti tra le reti!")
-    #else:
-    #    print("Attenzione! I pesi iniziali sono diversi.")
-
-    return model
+    return kernels
 
 
-def choose_model(name, labels_map):
+def choose_model(name):
     """
     This function based on the input name given from the prompt will return the selected model
-    :param name: input selected from prompt
-    :param labels_map: dictionary of the classes that we want to predict
-    :return: the model
     """
+
+    kernels = hand_kernels()
     if name == 1:
-        model = A1HF(labels_map)
+        model = A1HF(kernels)
 
     elif name == 2:
-        model = A1DT(labels_map)
+        model = A1DT()
 
     elif name == 3:
-        model = A1HT(labels_map)
+        model = A1HT(kernels)
 
     elif name == 4:
-        model = A2HF(labels_map)
+        model = A2HF(kernels)
 
     elif name == 5:
-        model = A2DT(labels_map)
+        model = A2DT()
 
     elif name == 6:
-        model = A2HT(labels_map)
+        model = A2HT(kernels)
 
     else:
         raise ValueError(f"Non è stata inserita un'opzione valida: {name}")
@@ -193,7 +133,7 @@ def choose_model(name, labels_map):
 def plot_graphs(accuracies, losses, epochs, model, precisions, f1s, recalls):  # , precisions, f1s, recalls):
     epoch_range = list(range(1, epochs + 1))
 
-    plt.figure(figsize=(20, 12))  # Più grande per chiarezza
+    plt.figure(figsize=(20, 12))
 
     # Common style settings
     plot_args = dict(marker='o', linewidth=2.5, markersize=6)

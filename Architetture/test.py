@@ -1,8 +1,10 @@
+import os
+
 import torch
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 
 
-def test_loop(dataloader, model, loss_fn, device):
+def test_loop(dataloader, model, loss_fn, device, epoch):
     size = len(dataloader.dataset)
     num_batches = len(dataloader)
     test_loss, correct = 0, 0
@@ -21,11 +23,13 @@ def test_loop(dataloader, model, loss_fn, device):
     test_loss /= num_batches
     accuracy = accuracy_score(all_labels, all_preds)
 
-    ## FOR HAVING MORE PRECISION ON RESULTS
     precision = precision_score(all_labels, all_preds, average='macro', zero_division=0)
     recall = recall_score(all_labels, all_preds, average='macro')
     f1 = f1_score(all_labels, all_preds, average='macro')
 
+    with open(f"logs\\{model.get_set()}{model.get_name()}_test_logs.txt", "a") as f:
+        f.write(f"EPOCH: {epoch}. \n \n Accuracy: {accuracy:>8f}, Avg loss: {test_loss:>8f} \n F1_Score: {f1:>8f} "
+                f"\n Precision: {precision:>8f} \n Recall: {recall:>8f} \n \n")
     print(
         f"Test Error: \n Accuracy: {accuracy:>8f}%, Avg loss: {test_loss:>8f}% \n F1_Score: {f1:>8f}% "
         f"\n Precision: {precision:>8f}% \n Recall: {recall:>8f}%")  # for more results, delete this

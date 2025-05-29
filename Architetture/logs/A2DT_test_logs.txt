@@ -1,0 +1,77 @@
+EPOCH: 0. 
+ 
+ Accuracy: 0.670100, Avg loss: 1.216428 
+ F1_Score: 0.644154 
+ Precision: 0.659865 
+ Recall: 0.670100 
+ 
+EPOCH: 1. 
+ 
+ Accuracy: 0.715000, Avg loss: 0.810419 
+ F1_Score: 0.704427 
+ Precision: 0.705076 
+ Recall: 0.715000 
+ 
+EPOCH: 2. 
+ 
+ Accuracy: 0.735900, Avg loss: 0.730726 
+ F1_Score: 0.727665 
+ Precision: 0.728016 
+ Recall: 0.735900 
+ 
+EPOCH: 3. 
+ 
+ Accuracy: 0.748100, Avg loss: 0.686686 
+ F1_Score: 0.740386 
+ Precision: 0.740355 
+ Recall: 0.748100 
+ 
+EPOCH: 4. 
+ 
+ Accuracy: 0.759100, Avg loss: 0.655741 
+ F1_Score: 0.752043 
+ Precision: 0.752473 
+ Recall: 0.759100 
+ 
+EPOCH: 5. 
+ 
+ Accuracy: 0.767300, Avg loss: 0.632034 
+ F1_Score: 0.760397 
+ Precision: 0.760824 
+ Recall: 0.767300 
+ 
+EPOCH: 6. 
+ 
+ Accuracy: 0.774400, Avg loss: 0.612727 
+ F1_Score: 0.768020 
+ Precision: 0.768390 
+ Recall: 0.774400 
+ 
+EPOCH: 7. 
+ 
+ Accuracy: 0.780900, Avg loss: 0.596474 
+ F1_Score: 0.774599 
+ Precision: 0.775186 
+ Recall: 0.780900 
+ 
+EPOCH: 8. 
+ 
+ Accuracy: 0.784800, Avg loss: 0.582591 
+ F1_Score: 0.778546 
+ Precision: 0.778923 
+ Recall: 0.784800 
+ 
+EPOCH: 9. 
+ 
+ Accuracy: 0.788400, Avg loss: 0.570563 
+ F1_Score: 0.782281 
+ Precision: 0.782617 
+ Recall: 0.788400 
+ 
+EPOCH: 10. 
+ 
+ Accuracy: 0.794100, Avg loss: 0.560020 
+ F1_Score: 0.787923 
+ Precision: 0.788902 
+ Recall: 0.794100 
+ 

@@ -23,6 +23,12 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, device):
             loss, current = loss.item(), (batch + 1) * len(X)
             current_loss = current / size
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+            if not os.path.exists('./logs'):
+                os.makedirs('./logs')
+            with open(f"logs\\{model.get_set()}{model.get_name()}_train_logs.txt", "a") as f:
+                f.write(
+                    f" EPOCH: {epoch} \n loss: {loss:>7f} "
+                    f" [{current:>5d}/{size:>5d}] \n \n")
 
     # torch save model with torch.save()
     checkpoint = {
