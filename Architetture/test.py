@@ -22,7 +22,7 @@ def test_loop(dataloader, model, loss_fn, device):
     accuracy = accuracy_score(all_labels, all_preds)
 
     ## FOR HAVING MORE PRECISION ON RESULTS
-    precision = precision_score(all_labels, all_preds, average='macro')
+    precision = precision_score(all_labels, all_preds, average='macro', zero_division=0)
     recall = recall_score(all_labels, all_preds, average='macro')
     f1 = f1_score(all_labels, all_preds, average='macro')
 

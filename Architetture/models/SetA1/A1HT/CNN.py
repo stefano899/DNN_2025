@@ -10,9 +10,7 @@ class A1HT(nn.Module):
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=5, kernel_size=3, padding=1)  # Convolution layer
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # Undersampling
         self.fc1 = nn.Linear(5 * 14 * 14,
-                             200)  # Fully connected layer
-        self.fc2 = nn.Linear(200,
-                             len(classes))
+                             len(classes))  # Fully connected layer
         self.relu = nn.ReLU()  # Activation Function
         self.flatten = nn.Flatten()
         self.set_initial_kernels()
@@ -40,6 +38,7 @@ class A1HT(nn.Module):
                                 [1, 1, 1],
                                 [0, 1, 0]], dtype=torch.float32)
         kernels = [kernel1, kernel2, kernel3, kernel4, kernel5]  # list of
+
         with torch.no_grad():
             for k, kernel in enumerate(kernels):
                 self.conv1.weight[k, 0] = kernel
@@ -47,8 +46,6 @@ class A1HT(nn.Module):
     def initialize_default_weights(self):
         with torch.no_grad():
             nn.init.xavier_uniform_(self.fc1.weight, gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self.fc2.weight, gain=nn.init.calculate_gain('relu'))
-            nn.init.xavier_uniform_(self.fc2.weight, gain=nn.init.calculate_gain('relu'))
 
     def forward(self, x):
         x = self.pool1(self.relu(self.conv1(x)))
@@ -57,7 +54,6 @@ class A1HT(nn.Module):
 
         x = self.relu(self.fc1(x))
 
-        x = self.fc2(x)
         return x
 
     def get_name(self):

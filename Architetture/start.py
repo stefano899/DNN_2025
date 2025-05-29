@@ -10,9 +10,9 @@ from Architetture.models.SetA1.A1HT.CNN import A1HT
 from Architetture.models.SetA2.A2DT.CNN import A2DT
 from Architetture.models.SetA2.A2HF.CNN import A2HF
 from Architetture.models.SetA2.A2HT.CNN import A2HT
+from Architetture.test import test_loop
 from data_loader import handle_dataset
 from train import train_loop
-from test import test_loop
 
 
 def start(device):
@@ -74,58 +74,88 @@ def begin(selection, device, epochs, batch_size):
     print("-------------------------------")
     return
 
+
+
 def initialization_or_load_weights(name, labels_map):
-    """
-
-    :param name: the name of the model (type = int)
-    :param labels_map: the dictionary of the classes that we want to predict
-    :return: returns the model
-
-    This function is used to initialize the model and to save the initialization weights of the first convolution layer.
-    In case there exists an initialization of the weights of the first convolution layer for the specified architecture,
-    it applies it. Otherwise, it will initialize the model and save the weights of the first convolution layer, creating
-    the initialization file of the architecture.
-
-    Example: Suppose that you have the Architecture HT of both Sets A1 and A2. In this case, if there exists a
-     weight initialization for the first conv layer of this architecture, both architectures of Sets A1 and A2 will
-     have the same weights in the first convolution layer.
-
-    """
     model = choose_model(name, labels_map)
-    init_dir = f"Initializations\\{model.get_name()}"
-    weights_path = os.path.join(init_dir, f"{model.get_name()}.initialization.pth")
+    init_dir = "Initializations"
 
-    if not os.path.exists(init_dir):
-        os.makedirs(init_dir, exist_ok=True)
-        print("Initialization path doesn't exist, i'm gonna save its first weights initialization.")
-        conv1_state_dict = {"conv1.weight": model.conv1.weight.data.clone(),
-                            "conv1.bias": model.conv1.bias.data.clone()}
-        torch.save(conv1_state_dict, weights_path)
-        print(
-            f"Initialization saved in {weights_path}. From now on, every new training process involving {model.get_name()} "
-            f"(independent from the set) will be instantiated with these weights.")
+    # Create subfolder for model name
+    weights_conv1_dir = os.path.join(init_dir, model.get_name())
+    weights_conv1_path = os.path.join(weights_conv1_dir, f"{model.get_name()}_conv1_weights_initialization.pth")
+
+    # Create subfolder for model set
+    other_weights_dir = os.path.join(init_dir, model.get_set())
+    other_weights_path = os.path.join(other_weights_dir, "fc1_and_or_conv2_weights_initialization.pth")
+
+    if not os.path.exists(weights_conv1_path):
+        os.makedirs(weights_conv1_dir, exist_ok=True)
+        print("Initialization conv1 path doesn't exist, I'm going to save its first weights initialization.")
+        conv1_state_dict = {
+            "conv1.weight": model.conv1.weight.data.clone(),
+            "conv1.bias": model.conv1.bias.data.clone()
+        }
+        torch.save(conv1_state_dict, weights_conv1_path)
     else:
-        print(f"There exists a weight initialization file for {model.get_name()}. I'm going to apply it to the model")
-        conv1_weights = torch.load(weights_path)
+        print(f"There exists a conv1 weight initialization file for {model.get_set()}{model.get_name()}. I'm going to apply it to the model.")
+        conv1_weights = torch.load(weights_conv1_path)
         with torch.no_grad():
             model.conv1.weight.copy_(conv1_weights["conv1.weight"])
             model.conv1.bias.copy_(conv1_weights["conv1.bias"])
 
-        # DEBUG For checking if it applies the weights in a correct way.
-        # Confronta i pesi del primo layer
-        # init = torch.load(weights_path)
-        # print(init.keys())
-        # layer_name = "conv1.weight"  # Modifica con il nome corretto del primo layer nel tuo modello
-        # weights_folder = init[layer_name]
-        # weights_model = model.conv1.weight.data
-        # print(f"weights_folder:")
-        # print(weights_model)
-        # print(f"weights_folder:")
-        # print(weights_folder)
-        # if torch.allclose(weights_model, weights_folder, atol=1e-6):
-        #    print("I pesi iniziali del primo layer sono coerenti tra le reti!")
-        # else:
-        #    print("Attenzione! I pesi iniziali sono diversi.")
+    if not os.path.exists(other_weights_path):
+        print("Initialization other layers path doesn't exist, I'm going to save its first weights initialization.")
+        os.makedirs(other_weights_dir, exist_ok=True)
+        if model.get_set() == "A1":
+            fc1_state_dict = {
+                "fc1.weight": model.fc1.weight.data.clone(),
+                "fc1.bias": model.fc1.bias.data.clone()
+            }
+            torch.save(fc1_state_dict, other_weights_path)
+        else:
+            fc2_conv2_state_dict = {
+                "conv2.weight": model.conv2.weight.data.clone(),
+                "conv2.bias": model.conv2.bias.data.clone(),
+                "fc1.weight": model.fc1.weight.data.clone(),
+                "fc1.bias": model.fc1.bias.data.clone()
+            }
+            torch.save(fc2_conv2_state_dict, other_weights_path)
+
+        print(
+            f"Initialization saved in {other_weights_path}.")
+
+    else:
+        print(f"There exists other layers initialization file for {model.get_set()}{model.get_name()}."
+              f"\n I'm going to apply it to the model.")
+
+        if model.get_set() == "A1":
+            fc1_weights = torch.load(other_weights_path)
+            with torch.no_grad():
+                model.fc1.weight.copy_(fc1_weights["fc1.weight"])
+                model.fc1.bias.copy_(fc1_weights["fc1.bias"])
+        else:
+            conv2_fc1_weights = torch.load(other_weights_path)
+            with torch.no_grad():
+                model.conv2.weight.copy_(conv2_fc1_weights["conv2.weight"])
+                model.conv2.bias.copy_(conv2_fc1_weights["conv2.bias"])
+                model.fc1.weight.copy_(conv2_fc1_weights["fc1.weight"])
+                model.fc1.bias.copy_(conv2_fc1_weights["fc1.bias"])
+
+    # DEBUG For checking if it applies the weights in a correct way.
+    # Confronta i pesi del primo layer
+    #init = torch.load(weights_conv1_path)
+    #print(init.keys())
+    #layer_name = "conv1.weight"  # Modifica con il nome corretto del primo layer nel tuo modello
+    #weights_folder = init[layer_name]
+    #weights_model = model.conv1.weight.data
+    #print(f"weights_folder:")
+    #print(weights_model)
+    #print(f"weights_folder:")
+    #print(weights_folder)
+    #if torch.allclose(weights_model, weights_folder, atol=1e-6):
+    #    print("I pesi iniziali del primo layer sono coerenti tra le reti!")
+    #else:
+    #    print("Attenzione! I pesi iniziali sono diversi.")
 
     return model
 
@@ -138,19 +168,19 @@ def choose_model(name, labels_map):
     :return: the model
     """
     if name == 1:
-        model = A1DT(labels_map)
+        model = A1HF(labels_map)
 
     elif name == 2:
-        model = A1HF(labels_map)
+        model = A1DT(labels_map)
 
     elif name == 3:
         model = A1HT(labels_map)
 
     elif name == 4:
-        model = A2DT(labels_map)
+        model = A2HF(labels_map)
 
     elif name == 5:
-        model = A2HF(labels_map)
+        model = A2DT(labels_map)
 
     elif name == 6:
         model = A2HT(labels_map)
