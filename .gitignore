@@ -1,0 +1,9 @@
+
+# Ignora cartella di cache
+/cache/
+
+# Ignora tutti i file .pyc generati da Python
+*.pyc
+
+# Ignora la cartella __pycache__ ovunque nel progetto
+**/__pycache__/
