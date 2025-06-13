@@ -1,7 +1,3 @@
-from torch import nn
-import torch
-from torch.nn import init
-
 from models.SetA1.SetA1 import SetA1
 
 

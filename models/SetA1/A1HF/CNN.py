@@ -1,12 +1,13 @@
+
 from torch import nn
 import torch
-from torch.nn import init
+from custom_kernels import kernels
 
 from models.SetA1.SetA1 import SetA1
 
 
 class A1HF(SetA1):
-    def __init__(self, kernels):
+    def __init__(self):
         super().__init__()
         self.name = "HF"
         self.set = "A1"

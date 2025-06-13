@@ -1,147 +1,150 @@
 EPOCH: 0. 
  
- Accuracy: 0.755600, Avg loss: 0.727019 
- F1_Score: 0.742047 
- Precision: 0.751684 
- Recall: 0.755600 
- 
+ Accuracy: 75.560000, Avg loss: 0.727019 
 EPOCH: 1. 
  
- Accuracy: 0.788200, Avg loss: 0.627762 
- F1_Score: 0.779677 
- Precision: 0.784673 
- Recall: 0.788200 
- 
+ Accuracy: 78.820000, Avg loss: 0.627762 
 EPOCH: 2. 
  
- Accuracy: 0.800000, Avg loss: 0.582665 
- F1_Score: 0.793333 
- Precision: 0.796706 
- Recall: 0.800000 
- 
+ Accuracy: 80.000000, Avg loss: 0.582665 
 EPOCH: 3. 
  
- Accuracy: 0.808000, Avg loss: 0.555231 
- F1_Score: 0.802448 
- Precision: 0.804980 
- Recall: 0.808000 
- 
+ Accuracy: 80.800000, Avg loss: 0.555231 
 EPOCH: 4. 
  
- Accuracy: 0.813600, Avg loss: 0.536257 
- F1_Score: 0.808968 
- Precision: 0.811016 
- Recall: 0.813600 
- 
+ Accuracy: 81.360000, Avg loss: 0.536257 
 EPOCH: 5. 
  
- Accuracy: 0.818800, Avg loss: 0.522179 
- F1_Score: 0.814700 
- Precision: 0.816173 
- Recall: 0.818800 
- 
+ Accuracy: 81.880000, Avg loss: 0.522179 
 EPOCH: 6. 
  
- Accuracy: 0.821600, Avg loss: 0.511248 
- F1_Score: 0.818032 
- Precision: 0.819319 
- Recall: 0.821600 
- 
+ Accuracy: 82.160000, Avg loss: 0.511248 
 EPOCH: 7. 
  
- Accuracy: 0.823800, Avg loss: 0.502479 
- F1_Score: 0.820502 
- Precision: 0.821658 
- Recall: 0.823800 
- 
+ Accuracy: 82.380000, Avg loss: 0.502479 
 EPOCH: 8. 
  
- Accuracy: 0.826300, Avg loss: 0.495264 
- F1_Score: 0.823234 
- Precision: 0.824134 
- Recall: 0.826300 
- 
+ Accuracy: 82.630000, Avg loss: 0.495264 
 EPOCH: 9. 
  
- Accuracy: 0.827100, Avg loss: 0.489205 
- F1_Score: 0.824121 
- Precision: 0.824877 
- Recall: 0.827100 
- 
+ Accuracy: 82.710000, Avg loss: 0.489205 
 EPOCH: 10. 
  
- Accuracy: 0.828200, Avg loss: 0.484031 
- F1_Score: 0.825441 
- Precision: 0.826214 
- Recall: 0.828200 
- 
+ Accuracy: 82.820000, Avg loss: 0.484031 
 EPOCH: 11. 
  
- Accuracy: 0.830100, Avg loss: 0.479546 
- F1_Score: 0.827314 
- Precision: 0.827932 
- Recall: 0.830100 
- 
+ Accuracy: 83.010000, Avg loss: 0.479546 
 EPOCH: 12. 
  
- Accuracy: 0.831900, Avg loss: 0.475609 
- F1_Score: 0.829244 
- Precision: 0.829866 
- Recall: 0.831900 
- 
+ Accuracy: 83.190000, Avg loss: 0.475609 
 EPOCH: 13. 
  
- Accuracy: 0.833900, Avg loss: 0.472115 
- F1_Score: 0.831343 
- Precision: 0.831917 
- Recall: 0.833900 
- 
+ Accuracy: 83.390000, Avg loss: 0.472115 
 EPOCH: 14. 
  
- Accuracy: 0.835200, Avg loss: 0.468983 
- F1_Score: 0.832801 
- Precision: 0.833309 
- Recall: 0.835200 
- 
+ Accuracy: 83.520000, Avg loss: 0.468983 
 EPOCH: 15. 
  
- Accuracy: 0.835700, Avg loss: 0.466151 
- F1_Score: 0.833370 
- Precision: 0.833769 
- Recall: 0.835700 
- 
+ Accuracy: 83.570000, Avg loss: 0.466151 
 EPOCH: 16. 
  
- Accuracy: 0.836600, Avg loss: 0.463572 
- F1_Score: 0.834339 
- Precision: 0.834756 
- Recall: 0.836600 
- 
+ Accuracy: 83.660000, Avg loss: 0.463572 
 EPOCH: 17. 
  
- Accuracy: 0.837900, Avg loss: 0.461207 
- F1_Score: 0.835756 
- Precision: 0.836194 
- Recall: 0.837900 
- 
+ Accuracy: 83.790000, Avg loss: 0.461207 
 EPOCH: 18. 
  
- Accuracy: 0.839000, Avg loss: 0.459025 
- F1_Score: 0.836835 
- Precision: 0.837225 
- Recall: 0.839000 
- 
+ Accuracy: 83.900000, Avg loss: 0.459025 
 EPOCH: 19. 
  
- Accuracy: 0.839300, Avg loss: 0.457002 
- F1_Score: 0.837154 
- Precision: 0.837530 
- Recall: 0.839300 
- 
+ Accuracy: 83.930000, Avg loss: 0.457002 
 EPOCH: 20. 
  
- Accuracy: 0.839600, Avg loss: 0.455117 
- F1_Score: 0.837522 
- Precision: 0.837831 
- Recall: 0.839600 
+ Accuracy: 83.960000, Avg loss: 0.455117 
+EPOCH: 21. 
  
+ Accuracy: 84.020000, Avg loss: 0.453354 
+EPOCH: 22. 
+ 
+ Accuracy: 84.040000, Avg loss: 0.451699 
+EPOCH: 23. 
+ 
+ Accuracy: 84.110000, Avg loss: 0.450139 
+EPOCH: 24. 
+ 
+ Accuracy: 84.180000, Avg loss: 0.448665 
+EPOCH: 25. 
+ 
+ Accuracy: 84.160000, Avg loss: 0.447267 
+EPOCH: 26. 
+ 
+ Accuracy: 84.170000, Avg loss: 0.445940 
+EPOCH: 27. 
+ 
+ Accuracy: 84.190000, Avg loss: 0.444676 
+EPOCH: 28. 
+ 
+ Accuracy: 84.220000, Avg loss: 0.443470 
+EPOCH: 29. 
+ 
+ Accuracy: 84.290000, Avg loss: 0.442317 
+EPOCH: 30. 
+ 
+ Accuracy: 84.310000, Avg loss: 0.441212 
+EPOCH: 31. 
+ 
+ Accuracy: 84.360000, Avg loss: 0.440152 
+EPOCH: 32. 
+ 
+ Accuracy: 84.430000, Avg loss: 0.439134 
+EPOCH: 33. 
+ 
+ Accuracy: 84.430000, Avg loss: 0.438154 
+EPOCH: 34. 
+ 
+ Accuracy: 84.460000, Avg loss: 0.437211 
+EPOCH: 35. 
+ 
+ Accuracy: 84.470000, Avg loss: 0.436300 
+EPOCH: 36. 
+ 
+ Accuracy: 84.470000, Avg loss: 0.435421 
+EPOCH: 37. 
+ 
+ Accuracy: 84.480000, Avg loss: 0.434572 
+EPOCH: 38. 
+ 
+ Accuracy: 84.550000, Avg loss: 0.433750 
+EPOCH: 39. 
+ 
+ Accuracy: 84.560000, Avg loss: 0.432954 
+EPOCH: 40. 
+ 
+ Accuracy: 84.520000, Avg loss: 0.432182 
+EPOCH: 41. 
+ 
+ Accuracy: 84.530000, Avg loss: 0.431433 
+EPOCH: 42. 
+ 
+ Accuracy: 84.630000, Avg loss: 0.430707 
+EPOCH: 43. 
+ 
+ Accuracy: 84.680000, Avg loss: 0.430001 
+EPOCH: 44. 
+ 
+ Accuracy: 84.690000, Avg loss: 0.429314 
+EPOCH: 45. 
+ 
+ Accuracy: 84.740000, Avg loss: 0.428646 
+EPOCH: 46. 
+ 
+ Accuracy: 84.790000, Avg loss: 0.427997 
+EPOCH: 47. 
+ 
+ Accuracy: 84.790000, Avg loss: 0.427363 
+EPOCH: 48. 
+ 
+ Accuracy: 84.800000, Avg loss: 0.426747 
+EPOCH: 49. 
+ 
+ Accuracy: 84.800000, Avg loss: 0.426145 

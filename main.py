@@ -1,17 +1,16 @@
 import os
 import shutil
-
-import torch
 from start import start
 
 if __name__ == "__main__":
 
-    folders = ["Checkpoints", "Plots", "logs"]
-    decisione = input(
-        "Warning: una volta fatto partire il main verranno cancellate le cartelle Checkpoints, Plots e logs"
-        " (per poi essere ricreate) PROCEDERE? S/n ")
+    folders = ["Plots", "logs"]
+    decision = input(
+        "Warning: once main is executed, Plots and logs will be eliminated and then recreated. \n If you want to retrain"
+        "a model, Please be sure that you have deleted the corresponding checkpoint folder."
+        " PROCEED? S/n ")
 
-    if decisione == "S" or decisione == "s":
+    if decision == "S" or decision == "s":
         for folder in folders:
             if os.path.exists(folder):
                 shutil.rmtree(folder)
@@ -19,13 +18,10 @@ if __name__ == "__main__":
             else:
                 print(f"{folder} doesn't exists.")
 
-    elif decisione == "n" or decisione == "N":
+    elif decision == "n" or decision == "N":
         exit()
 
     else:
         raise ValueError(f"Non è stata inserita un'opzione valida")
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-    start(device)
+    start()

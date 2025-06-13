@@ -1,6 +1,5 @@
 from torch import nn
 import torch
-from torch.nn import init
 
 
 class SetA2(nn.Module):
