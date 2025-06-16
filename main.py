@@ -24,6 +24,6 @@ if __name__ == "__main__":
         print("Goodbye")
 
     else:
-        raise ValueError(f"Non è stata inserita un'opzione valida")
+        raise ValueError(f"Not a valid option.")
 
 

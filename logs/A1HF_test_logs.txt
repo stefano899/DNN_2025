@@ -1,3 +1,30 @@
 EPOCH: 0. 
  
  Accuracy: 75.560000, Avg loss: 0.727019 
+EPOCH: 1. 
+ 
+ Accuracy: 78.820000, Avg loss: 0.627762 
+EPOCH: 2. 
+ 
+ Accuracy: 80.000000, Avg loss: 0.582665 
+EPOCH: 3. 
+ 
+ Accuracy: 80.800000, Avg loss: 0.555231 
+EPOCH: 4. 
+ 
+ Accuracy: 81.360000, Avg loss: 0.536257 
+EPOCH: 5. 
+ 
+ Accuracy: 81.880000, Avg loss: 0.522179 
+EPOCH: 6. 
+ 
+ Accuracy: 82.160000, Avg loss: 0.511248 
+EPOCH: 7. 
+ 
+ Accuracy: 82.380000, Avg loss: 0.502479 
+EPOCH: 8. 
+ 
+ Accuracy: 82.630000, Avg loss: 0.495264 
+EPOCH: 9. 
+ 
+ Accuracy: 82.710000, Avg loss: 0.489205 
