@@ -1,10 +1,13 @@
 from models.SetA1.SetA1 import SetA1
 
 
-# 5*14*14 * 10 + 3*3*5 = 9845
-
 class A1DT(SetA1):
+    """
+    Class A1DT: model of the SetA1 Architecture.
 
+    Both Convolutional and Fully Connected Layers are initialized with the default initialization. In particular,
+    They're initialized with the Kaiming initialization, i.e the HE initialization.
+    """
     def __init__(self):
         super().__init__()
         self.name = "DT"

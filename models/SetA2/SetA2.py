@@ -3,6 +3,19 @@ import torch
 
 
 class SetA2(nn.Module):
+    """
+    Class SetA2: Defines the second type of architecture.
+
+    Architecture Overview:
+        - Two convolutional layers:
+            - The first has 5 output channels, kernel size 3x3, padding=1, and stride=1.
+            - The second has 10 output channels, 5 input channels, kernel size 3x3, padding=0, and stride=1.
+        - Two max pooling layers (non-trainable).
+        - One fully connected layer with an input size of 360 and an output size of 10.
+        - Activation function: ReLU.
+        - Total number of trainable parameters: 5*6*6 * 10 + 3*3*5 + 10*3*3 = 1800 + 45 + 90 = 1.935
+    """
+
     def __init__(self, classes=10):
         super(SetA2, self).__init__()
         torch.manual_seed(0)

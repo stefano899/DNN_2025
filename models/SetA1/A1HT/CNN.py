@@ -5,6 +5,14 @@ from models.SetA1.SetA1 import SetA1
 
 
 class A1HT(SetA1):
+    """
+    Class A1HT: model of the SetA1 Architecture.
+
+    First Convolutional layer is initialized with manual weights, and it will be trained during the training process;
+    Fully Connected Layer are initialized with the default initialization. In particular, it is
+    initialized with the Kaiming initialization, i.e the HE initialization.
+
+    """
     def __init__(self):
         super().__init__()
         self.name = "HT"

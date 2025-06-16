@@ -3,6 +3,17 @@ from torch import nn
 
 
 class SetA1(nn.Module):
+    """
+    Class SetA1: Defines the first architecture.
+
+    Architecture Details:
+        - One convolutional layer with 5 output channels, kernel size 3x3, padding=1, and stride=1.
+        - One max pooling layer (non-trainable).
+        - One fully connected layer with an input size of 980 and an output size of 10.
+        - Activation function: ReLU.
+        - Total number of trainable parameters: 5×14×14 × 10 + 3×3×5 = 9.845
+    """
+
     def __init__(self, classes=10):
         super(SetA1, self).__init__()
 

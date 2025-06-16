@@ -5,6 +5,14 @@ from models.SetA2.SetA2 import SetA2
 
 
 class A2HF(SetA2):
+    """
+    Class A1HF: model of the SetA1 Architecture.
+
+    First Convolutional layer is initialized with manual weights, and it is not trained during training;
+    Second Convolutional layer and Fully Connected Layer are initialized with the default initialization.
+    In particular they're initialized with the Kaiming initialization, i.e the HE initialization.
+
+    """
     def __init__(self):
         super(A2HF, self).__init__()
         self.name = "HF"

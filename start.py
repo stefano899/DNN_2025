@@ -11,8 +11,8 @@ from models.SetA1.A1HT.CNN import A1HT
 from models.SetA2.A2DT.CNN import A2DT
 from models.SetA2.A2HF.CNN import A2HF
 from models.SetA2.A2HT.CNN import A2HT
-from test import test_loop
 
+from test import test_loop
 from data_loader import data_loader
 from train import train_loop
 
@@ -48,6 +48,7 @@ def start():
         model_name = input(
             "Choose the name of the model by copying one of the following model names into the prompt: \n "
             "A1HF, \n A1DT, \n A1HT,\n A2HF,\n A2DT, \n A2HT: ")
+
         epochs = int(input("Insert the number of epochs: "))
 
         if model_name in MODELS_DICTIONARY:
@@ -67,6 +68,7 @@ def start():
     elif choice == 2:
         checkpoint_path = input("Insert the path of the checkpoint of the model that you want to resume: ")
         load_checkpoint(checkpoint_path)
+
     else:
         raise ValueError(f"No valid option has been chose")
 
@@ -103,13 +105,17 @@ def load_checkpoint(checkpoint_path):
         model_name = 'A2' + name
 
     if model_name in MODELS_DICTIONARY:
+
+        # Deleting Current checkpoint folder to avoid overriding
+        shutil.rmtree(checkpoint_folder)
+
         model = MODELS_DICTIONARY[model_name]()
         model.load_state_dict(checkpoint['model_state_dict'])
-        shutil.rmtree(checkpoint_folder)
         epochs = checkpoint['epochs']
         epoch = checkpoint['epoch']
         remaining_epochs = epochs - epoch
         training_testing(model, remaining_epochs)
+
     else:
         raise ValueError(f"{model_name} not found or the checkpoint doesn't exists")
 
@@ -125,7 +131,7 @@ def training_testing(model, epochs):
     collects performance metrics, and at the end of the training it plots the results.
 
     Parameters:
-        model (torch.nn.Module): The neural network model to train and evaluate.
+        model (object): The neural network model to train and evaluate.
         epochs (int): Number of training epochs.
     Returns:
         None
@@ -136,7 +142,6 @@ def training_testing(model, epochs):
 
     batch_size = 128
     train_dataloader, test_dataloader = data_loader(batch_size)
-    # model = initialization_or_load_weights(selection)
 
     learning_rate = 1e-4
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
@@ -145,7 +150,6 @@ def training_testing(model, epochs):
     print(f"Starting training for {model.get_set()}{model.get_name()}")
     accuracies = []
     losses = []
-
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1}\n-------------------------------")
 
