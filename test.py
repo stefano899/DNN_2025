@@ -1,7 +1,4 @@
-import os
-
 import torch
-from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 
 
 def test_loop(dataloader, model, loss_fn, device, epoch):

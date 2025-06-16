@@ -16,6 +16,15 @@ from test import test_loop
 from data_loader import data_loader
 from train import train_loop
 
+MODELS_DICTIONARY = {
+    'A1HF': A1HF,
+    'A1HT': A1HT,
+    'A1DT': A1DT,
+    'A2HF': A2HF,
+    'A2HT': A2HT,
+    'A2DT': A2DT
+}
+
 
 def start():
     """
@@ -36,21 +45,23 @@ def start():
     if choice == 0:
 
         print("Checkpoint Folder will be deleted")
-        model_name = int(input(
-            "Choose the name of the model inserting a number that goes from 1 to 6. Here's the legend: \n 1- "
-            "A1HF, \n 2- A1DT, \n 3- A1HT,\n 4- A2HF,\n 5- A2DT, \n 6- A2HT: "))
+        model_name = input(
+            "Choose the name of the model by copying one of the following model names into the prompt: \n "
+            "A1HF, \n A1DT, \n A1HT,\n A2HF,\n A2DT, \n A2HT: ")
         epochs = int(input("Insert the number of epochs: "))
-        model = choose_model(model_name)
-        training_testing(model, epochs)
+
+        if model_name in MODELS_DICTIONARY:
+            model = MODELS_DICTIONARY[model_name]()
+            training_testing(model, epochs)
+        else:
+            raise ValueError(f"{model_name} is not a valid model")
 
     elif choice == 1:
         print("All 6 models will be trained in sequence and all of them will have the same number of epochs: ")
-
-        selections = [1, 2, 3, 4, 5, 6]
         epochs = int(input("Insert the Number of Epochs: "))
 
-        for model_name in selections:
-            model = choose_model(model_name)
+        for key in MODELS_DICTIONARY:
+            model = MODELS_DICTIONARY[key]()
             training_testing(model, epochs)
 
     elif choice == 2:
@@ -67,7 +78,8 @@ def load_checkpoint(checkpoint_path):
     load a checkpoint and starts the training.
 
     This function load a checkpoint given by the user and after instantiating the model it loads the state_dict of the
-    checkpoint to continue training from where it has stopped.
+    checkpoint to continue training from where it has stopped. The path of the checkpoint must be of this format:
+    ../SetA1/DT/epoch_2_Model_CNN_DT.pth
 
     Parameters:
        checkpoint_path (string): the path of the checkpoint
@@ -75,29 +87,32 @@ def load_checkpoint(checkpoint_path):
     Returns:
         None
     """
+
+    checkpoint = torch.load(checkpoint_path)
+
     checkpoint_folder = os.path.split(checkpoint_path)[0]
 
     # Get the set name from the path
     set_name = os.path.basename(os.path.dirname(os.path.dirname(checkpoint_path)))
-
+    # Get the model name from the path
     name = os.path.basename(os.path.dirname(checkpoint_path))
-
-    checkpoint = torch.load(checkpoint_path)
 
     if set_name == 'SetA1':
         model_name = 'A1' + name
     else:
         model_name = 'A2' + name
 
-    model_class = globals()[model_name]
-    model = model_class()
-    model.load_state_dict(checkpoint['model_state_dict'])
+    if model_name in MODELS_DICTIONARY:
+        model = MODELS_DICTIONARY[model_name]()
+        model.load_state_dict(checkpoint['model_state_dict'])
+        shutil.rmtree(checkpoint_folder)
+        epochs = checkpoint['epochs']
+        epoch = checkpoint['epoch']
+        remaining_epochs = epochs - epoch
+        training_testing(model, remaining_epochs)
+    else:
+        raise ValueError(f"{model_name} not found or the checkpoint doesn't exists")
 
-    shutil.rmtree(checkpoint_folder)
-    epochs = checkpoint['epochs']
-    epoch = checkpoint['epoch']
-    remaining_epochs = epochs - epoch
-    training_testing(model, remaining_epochs)
     return
 
 
@@ -145,78 +160,53 @@ def training_testing(model, epochs):
     return
 
 
-def choose_model(name):
+def plot_and_save(epoch_range, y_values, y_label, title, color, filepath):
     """
-    Initialization of one of the six models.
+    Create and Saves Plots from a model.
 
-    This function, based on the input name given from the prompt, will
-    return the selected model
+    This function creates a plot and saves it in the specified path.
 
+    Parameters:
+        epoch_range (list of int): List of epoch numbers (e.g., [1, 2, 3, ..., n]) representing x-axis values.
+        y_values (list of float): Corresponding metric values for each epoch on the y-axis.
+        y_label (str): Label for the y-axis.
+        title (str): Title of the plot.
+        color (str): Color name for the plot line.
+        filepath (str): path where to save the plot image
     Returns:
-        model(torch.nn.Module): the selected model.
+        None
+    """
+    plt.figure(figsize=(10, 6))
+    plt.plot(epoch_range, y_values, label=y_label, color=color, marker='o', linewidth=2.5, markersize=6)
+    plt.xlabel('Epochs', fontsize=14)
+    plt.ylabel(y_label, fontsize=14)
+    plt.title(title, fontsize=16)
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend(fontsize=12)
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.tight_layout()
+    plt.savefig(filepath)
+    plt.close()
+    print(f"Saved {y_label.lower()} plot to {filepath}")
+
+
+def plot_graphs(accuracies, losses, epochs, model):
+    """
+    Parameters:
+        accuracies (list): Accuracy values for each epoch.
+        losses (list): Loss values for each epoch.
+        epochs (int): Total number of training epochs.
+        model (object): model of the Architecture.
     """
 
-    if name == 1:
-        model = A1HF()
-
-    elif name == 2:
-        model = A1DT()
-
-    elif name == 3:
-        model = A1HT()
-
-    elif name == 4:
-        model = A2HF()
-
-    elif name == 5:
-        model = A2DT()
-
-    elif name == 6:
-        model = A2HT()
-
-    else:
-        raise ValueError(f"No valid option has been chose: {name}")
-    return model
-
-
-def plot_graphs(accuracies, losses, epochs, model):  # , precisions, f1s, recalls):
     epoch_range = list(range(1, epochs + 1))
+    output_dir = os.path.join("Plots", f"Set{model.get_set()}", f"{model.get_set()}{model.get_name()}")
 
-    plt.figure(figsize=(20, 12))
-
-    # Common style settings
-    plot_args = dict(marker='o', linewidth=2.5, markersize=6)
-
-    font_title = 16
-    font_label = 14
-    font_tick = 12
-    font_legend = 12
-
-    # Accuracy
-    plt.subplot(3, 2, 1)
-    plt.plot(epoch_range, accuracies, label="Accuracy", color='blue', **plot_args)
-    plt.xlabel('Epochs', fontsize=font_label)
-    plt.ylabel('Accuracy', fontsize=font_label)
-    plt.title('Accuracy Over Epochs', fontsize=font_title)
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend(fontsize=font_legend)
-    plt.xticks(fontsize=font_tick)
-    plt.yticks(fontsize=font_tick)
-
-    # Loss
-    plt.subplot(3, 2, 2)
-    plt.plot(epoch_range, losses, label="Loss", color='red', **plot_args)
-    plt.xlabel('Epochs', fontsize=font_label)
-    plt.ylabel('Loss', fontsize=font_label)
-    plt.title('Loss Over Epochs', fontsize=font_title)
-    plt.grid(True, linestyle='--', alpha=0.6)
-    plt.legend(fontsize=font_legend)
-    plt.xticks(fontsize=font_tick)
-    plt.yticks(fontsize=font_tick)
-
-    # Saving plots
-    plt.tight_layout()
-    output_dir = f"Plots\\Set_{model.get_set()}\\{model.get_set()}{model.get_name()}"
     os.makedirs(output_dir, exist_ok=True)
-    plt.savefig(os.path.join(output_dir, f"accuracy_loss_plot_of_{model.get_set()}{model.get_name()}.png"))
-    print(f"Saved plot to {output_dir}")
+
+    accuracy_path = os.path.join(output_dir, f"accuracy_plot_of_{model.get_set()}{model.get_name()}.png")
+    loss_path = os.path.join(output_dir, f"loss_plot_of_{model.get_set()}{model.get_name()}.png")
+
+    plot_and_save(epoch_range, accuracies, 'Accuracy', 'Accuracy Over Epochs', 'blue', accuracy_path)
+    plot_and_save(epoch_range, losses, 'Loss', 'Loss Over Epochs', 'red', loss_path)

@@ -47,7 +47,7 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, device, epochs):
                 os.makedirs('./logs')
             with open(f"logs\\{model.get_set()}{model.get_name()}_train_logs.txt", "a") as f:
                 f.write(
-                    f" EPOCH: {epoch + 1} \n loss: {loss:>7f} "
+                    f" EPOCH: {epoch} \n loss: {loss:>7f} "
                     f" [{current:>5d}/{size:>5d}] \n \n")
 
     # torch save model with torch.save()

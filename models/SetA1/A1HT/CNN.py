@@ -1,4 +1,3 @@
-from torch import nn
 import torch
 from custom_kernels import kernels
 

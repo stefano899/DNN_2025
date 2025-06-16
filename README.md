@@ -5,5 +5,9 @@ Python version used: 3.13.2
 
 Environment Used: Anaconda
 
-Before running the "main.py" file, please install the packages put in the "requirements.txt" file. 
+Before running the "main.py" file, please install in your environment the packages put in the "requirements.txt" file throught this command prompt code:
+
+```bash
+pip install -r requirements.txt
+ 
  
