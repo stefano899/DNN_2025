@@ -2,6 +2,10 @@
 # Ignora cartella di cache
 /cache/
 
+/Checkpoints/
+/Plots/
+/logs/
+
 # Ignora tutti i file .pyc generati da Python
 *.pyc
 
