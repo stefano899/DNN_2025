@@ -28,14 +28,14 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, device, epochs):
     print(f"Training set of size: {size}")
 
     for batch, (X, y) in enumerate(dataloader):  # (X = input, y = target)
-        X, y = X.to(device), y.to(device)  # Setting of 2 architectures
+        X, y = X.to(device), y.to(device)
 
         # Compute prediction and loss
         pred = model(X)
         loss = loss_fn(pred, y)
 
         # Backpropagation
-        optimizer.zero_grad()  # Loss function calculating the zero-gradient descent
+        optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
@@ -57,11 +57,10 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch, device, epochs):
         'epoch': epoch
     }
 
-    # Impose the directory of where you want to save checkpoints
     checkpoint_dir = f'Checkpoints\\Set{model.get_set()}\\{model.get_name()}'
     os.makedirs(checkpoint_dir, exist_ok=True)
     checkpoint_path = os.path.join(checkpoint_dir,
-                                   f'epoch_{epoch + 1}_Model_CNN_{model.get_name()}.pth')
+                                   f'epoch_{epoch}_Model_CNN_{model.get_name()}.pth')
     print(f"Checkpoint saved to {checkpoint_path}")
     torch.save(checkpoint, checkpoint_path)
 

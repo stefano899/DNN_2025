@@ -31,7 +31,7 @@ def test_loop(dataloader, model, loss_fn, device, epoch):
             X, y = X.to(device), y.to(device)
             pred = model(X)
             test_loss += loss_fn(pred, y).item()
-            predicted = pred.argmax(1)  # assumes output is logits or probabilities over classes
+            predicted = pred.argmax(1)
             correct += (predicted == y).sum().item()
             total += y.size(0)
 
